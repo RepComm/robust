@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    
+    <link rel="stylesheet" href="./index.css"/>
     <!--Polyfill for using import maps (in my case for firefox)-->
     <script async src="./es-module-shims.js"></script>
 
@@ -9,7 +9,9 @@
     <script type="importmap">
     {
       "imports": {
-        "@repcomm/exponent-ts": "./node_modules/@repcomm/exponent-ts/docs/mod.js"
+        "@repcomm/exponent-ts": "./node_modules/@repcomm/exponent-ts/docs/mod.js",
+        "@repcomm/scenario2d": "./node_modules/@repcomm/scenario2d/mod.js",
+        "@dimforge/rapier2d-compat": "./node_modules/@dimforge/rapier2d-compat/rapier.es.js"
       }
     }
     </script>

@@ -42,11 +42,12 @@ async function main () {
   .setId("drawing")
   .mount(container)
   .addRenderPass((ctx)=>{
-    Globals.scene.scale = drawing.width/(Globals.mainCamera.width||8);
+    Globals.scene.scale = drawing.width/(Globals.mainCamera.orthographicSize||8);
 
     Globals.scene.object.render(ctx);
   })
   .setHandlesResize(true);
+  Globals.canvas = drawing.element;
   
   setInterval(()=>{
     Globals.rapierWorld.step();

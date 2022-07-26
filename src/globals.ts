@@ -6,6 +6,7 @@ export interface GlobalsDef {
   rapierWorld?: RapierWorld;
   scene?: ObjectEntity;
   mainCamera?: Camera;
+  canvas?: HTMLCanvasElement;
 }
 
 export const Globals: GlobalsDef = {

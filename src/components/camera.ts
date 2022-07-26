@@ -3,27 +3,32 @@ import { Globals } from "../globals.js";
 import { ObjectComponent } from "./objectcomponent.js";
 
 export class Camera extends ObjectComponent {
-  width: number;
+  orthographicSize: number;
 
   constructor() {
     super();
-    this.width = 10;
+    this.orthographicSize = 10;
 
     this.onUpdate = () => {
-
       if (Globals.mainCamera === this) {
         Globals.scene.position
           .copy(this.entity.position)
           .mulScalar(-Globals.scene.scale);
 
-        Globals.scene.position.x += (this.width/2 ) * Globals.scene.scale;
-        Globals.scene.position.y += (this.width/2 ) * Globals.scene.scale;
+        let aspect = Globals.canvas.width / Globals.canvas.height;
+        let x = (this.orthographicSize/2) * Globals.scene.scale;
+        let y = (this.orthographicSize/2) * Globals.scene.scale / aspect;
+
+        Globals.scene.position.x += x;
+        Globals.scene.position.y += y;
+        
+
         // Globals.scene.rotation = this.entity.rotation * -1;
       }
     };
   }
-  setWidth (w: number): this {
-    this.width = w;
+  setOrthographicSize (w: number): this {
+    this.orthographicSize = w;
     return this;
   }
   onAttach(): void {

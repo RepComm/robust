@@ -3,9 +3,11 @@ import { ObjectComponent } from "./objectcomponent.js";
 export class Renderable extends ObjectComponent {
   constructor() {
     super();
-    this._renderableObject = new Object2D();
+    this._renderableObject = new Object2D(); //@ts-expect-error
 
-    this._renderableObject.onRenderSelf = ctx => this.onRenderSelf(ctx);
+    this._renderableObject.onRenderSelf = ctx => {
+      this.onRenderSelf(ctx);
+    };
   }
 
   init() {

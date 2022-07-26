@@ -4,7 +4,6 @@ import type { ObjectEntity } from "./objectentity";
 
 export interface GlobalsDef {
   rapierWorld?: RapierWorld;
-  widthInMeters?: number;
   scene?: ObjectEntity;
   mainCamera?: Camera;
 }

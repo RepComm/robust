@@ -8,7 +8,10 @@ export class Renderable extends ObjectComponent {
   constructor () {
     super();
     this._renderableObject = new Object2D();
-    this._renderableObject.onRenderSelf = (ctx)=>this.onRenderSelf(ctx) as any;
+    //@ts-expect-error
+    this._renderableObject.onRenderSelf = (ctx)=>{
+      this.onRenderSelf(ctx);
+    };
   }
   init () {
     this.entity.object.add(this._renderableObject);
@@ -29,6 +32,5 @@ export class Renderable extends ObjectComponent {
     this.deinit();
   }
   onRenderSelf (ctx: CanvasRenderingContext2D) {
-
   }
 }

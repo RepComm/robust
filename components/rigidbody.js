@@ -1,6 +1,7 @@
 import { ObjectComponent } from "./objectcomponent.js";
 import { RigidBodyDesc, RigidBodyType } from "@dimforge/rapier2d-compat";
 import { Globals } from "../globals.js";
+import { RAD2DEG } from "@repcomm/scenario2d";
 export class RigidBody extends ObjectComponent {
   constructor() {
     super();
@@ -16,8 +17,17 @@ export class RigidBody extends ObjectComponent {
       } = this._rapierRigidBody.translation();
 
       this.entity.position.set(x, y);
-      this.entity.rotation = this._rapierRigidBody.rotation();
+      this.entity.rotation = this._rapierRigidBody.rotation() * RAD2DEG;
     };
+  }
+
+  setTranslation(x, y) {
+    this._rapierRigidBody.setTranslation({
+      x,
+      y
+    }, true);
+
+    return this;
   }
 
   setAdditionalMass(m) {

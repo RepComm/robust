@@ -1,16 +1,12 @@
 
+import { init as initRapier, World as RapierWorld } from "@dimforge/rapier2d-compat";
 import { Drawing, EXPONENT_CSS_BODY_STYLES, EXPONENT_CSS_STYLES, Panel } from "@repcomm/exponent-ts";
+import { Chunk } from "./components/chunk.js";
+import { Player } from "./components/player.js";
+import { Globals } from "./globals.js";
 import { ObjectEntity } from "./objectentity.js";
 
-import { init as initRapier, World as RapierWorld } from "@dimforge/rapier2d-compat";
-import { Globals } from "./globals.js";
 
-import { Renderable } from "./components/renderable.js";
-import { RigidBody } from "./components/rigidbody.js";
-import { Camera } from "./components/camera.js";
-import { Chunk } from "./components/chunk.js";
-import { BallCollider } from "./components/ballcollider.js";
-import { Player } from "./components/player.js";
 
 EXPONENT_CSS_STYLES.mount(document.head);
 EXPONENT_CSS_BODY_STYLES.mount(document.head);
@@ -42,9 +38,17 @@ async function main () {
   .setId("drawing")
   .mount(container)
   .addRenderPass((ctx)=>{
-    Globals.scene.scale = drawing.width/(Globals.mainCamera.width||8);
+    ctx.save();
+    let s = drawing.width/(Globals.mainCamera.width||8);
+    ctx.scale(s, s);
+    let {x, y} = Globals.mainCamera.entity.globalTransform.position;
+    let aspect = drawing.width / drawing.height;
+    x -= Globals.mainCamera.width/2;
+    y -= Globals.mainCamera.width/2 / aspect;
+    ctx.translate(-x, -y);
 
     Globals.scene.object.render(ctx);
+    ctx.restore();
   })
   .setHandlesResize(true);
   

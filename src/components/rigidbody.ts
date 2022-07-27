@@ -1,9 +1,11 @@
 
-import { ObjectComponent } from "./objectcomponent.js";
-
-import { RigidBodyDesc, RigidBody as RapierRigidBody, RigidBodyType, Vector } from "@dimforge/rapier2d-compat";
+import { RigidBodyDesc, RigidBody as RapierRigidBody, RigidBodyType, Vector, RayColliderIntersection } from "@dimforge/rapier2d-compat";
 import { Globals } from "../globals.js";
 import { RAD2DEG } from "@repcomm/scenario2d";
+
+import { ObjectComponent } from "./objectcomponent.js";
+
+import { Ray } from "../utils/ray.js";
 
 export class RigidBody extends ObjectComponent {
   _rapierRigidBodyDesc: RigidBodyDesc;
@@ -116,5 +118,14 @@ export class RigidBody extends ObjectComponent {
   applyImpulseAtPoint(f: Vector, p: Vector, wake: boolean = true): this {
     this._rapierRigidBody.applyImpulseAtPoint(f, p, wake);
     return this;
+  }
+  raycast (r: Ray, maxToi: number): RayColliderIntersection {
+    return Globals.rapierWorld.castRayAndGetNormal(
+      r._rapierRay,
+      maxToi,
+      false,
+      undefined, undefined, undefined,
+      this._rapierRigidBody
+    );
   }
 }

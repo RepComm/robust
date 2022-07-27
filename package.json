@@ -32,6 +32,6 @@
     "@dimforge/rapier2d-compat": "^0.9.0",
     "@repcomm/exponent-ts": "^1.1.9",
     "@repcomm/gameinput-ts": "^1.10.4",
-    "@repcomm/scenario2d": "^2.0.2"
+    "@repcomm/scenario2d": "^2.0.3"
   }
 }

@@ -6,11 +6,7 @@ export class Camera extends ObjectComponent {
     this.width = 10;
 
     this.onUpdate = () => {
-      if (Globals.mainCamera === this) {
-        Globals.scene.position.copy(this.entity.position).mulScalar(-Globals.scene.scale);
-        Globals.scene.position.x += this.width / 2 * Globals.scene.scale;
-        Globals.scene.position.y += this.width / 2 * Globals.scene.scale; // Globals.scene.rotation = this.entity.rotation * -1;
-      }
+      if (Globals.mainCamera === this) {}
     };
   }
 

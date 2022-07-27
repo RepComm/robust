@@ -6,6 +6,7 @@ import { Box, BoxList } from "../math/boxlist.js";
 import { RigidBody } from "./rigidbody.js";
 import { MeshCollider } from "./meshcollider.js";
 import { RigidBodyType } from "@dimforge/rapier2d-compat";
+import { Globals } from "../globals.js";
 
 function randomColor(): string {
   let str = Math.floor(Math.random() * 0xffffffff).toString(16);
@@ -124,6 +125,10 @@ export class Chunk extends Renderable {
     out.chunkX = localX;
     out.chunkY = localY;
   }
+  isBlockEmpty (localX: number, localY: number): boolean {
+    this.getBlock(localX, localY, this.collisionBlock);
+    return this.collisionBlock.type === 0;
+  }
   /**Writes only type, and index to `out`
    * @param index 
    * @param out 
@@ -159,17 +164,41 @@ export class Chunk extends Renderable {
         ctx.fillRect(x, y, 1, 1);
       }
     }
+    
+    this.renderCollisions(ctx);
+  }
+  renderCollisions (ctx: CanvasRenderingContext2D) {
+    let vs = this.meshCollider.vertices;
+    let inds = this.meshCollider.indices;
 
-    // for (let box of this.boxlist.boxes) {
-    //   ctx.lineWidth = 0.05;
-    //   ctx.strokeStyle = "red";
-    //   ctx.strokeRect(
-    //     box.position.x,
-    //     box.position.y,
-    //     box.size.x,
-    //     box.size.y
-    //   );
-    // }
+    if (!vs) return;
+
+    let x=0;
+    let y=0;
+
+    ctx.beginPath();
+    let ia = 0;
+    let ib = 0;
+    
+    for (let i=0; i<inds.length;) {
+
+      ia = inds[i];
+      i++;
+      ib = inds[i];
+      i++;
+
+      x = vs[ ia ];
+      y = vs[ ia+1 ];
+      ctx.moveTo(x, y);
+
+      x = vs[ ib ];
+      y = vs[ ib+1 ];
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2/Globals.scene.scale;
+    // ctx.closePath();
+    ctx.stroke();
   }
   init() {
     super.init();
@@ -199,43 +228,19 @@ export class Chunk extends Renderable {
     this.deinit();
   }
   calculateCollision() {
-    //reset collision
-    // this.boxlist.clear();
-
-    // let box: Box;
-
-    // for (let x = 0; x < Chunk.WIDTH; x++) {
-    //   for (let y = 0; y < Chunk.HEIGHT; y++) {
-    //     //calculate current block
-    //     this.getBlock(x, y, this.collisionBlock);
-
-    //     //If this block has collision
-    //     if (this.collisionBlock.type !== 0) {
-    //       //If we need a separate collision box
-    //       if (!box) {
-    //         box = this.boxlist.boxAt(x, y, 1, 1);
-    //       } else {
-    //         //otherwise extend the last one (it gets reset for blocks with no collision)
-    //         // box.halfExtents.y += 0.5;
-    //         Box.extend(box, 0, 0, 0, 1);
-    //       }
-    //       //If the block has no collision
-    //     } else {
-    //       //reset box so we'll need a new one in future in this column
-    //       box = undefined;
-    //     }
-    //   }
-    //   //reset block at end
-    //   box = undefined;
-    // }
 
     let vs = new Array<number>();
-    // let inds = new Array<number>();
+    let inds = new Array<number>();
     let minx: number;
     let maxx: number;
     let miny: number;
     let maxy: number;
     let idx = 0;
+
+    let ind = 0;
+
+    let topEmpty = false;
+    let leftEmpty = false;
 
     for (let x = 0; x < Chunk.WIDTH; x++) {
       for (let y = 0; y < Chunk.HEIGHT; y++) {
@@ -247,48 +252,46 @@ export class Chunk extends Renderable {
         //dont render air
         if (this.renderBlock.type === 0) continue;
 
+        topEmpty = (y === 0) || this.isBlockEmpty(x, y-1);
+        leftEmpty = (x === 0) || this.isBlockEmpty(x-1, y);
+
         minx = x;
         maxx = minx + 1;
         miny = y;
         maxy = miny + 1;
 
+        if (topEmpty) {
+          vs.push(
+            minx, miny,
+            maxx, miny
+          );
+          inds.push(ind++, ind++);
+        }
+
+        if (leftEmpty) {
+          vs.push(
+            minx, miny,
+            minx, maxy
+          );
+          inds.push(ind++, ind++);
+        }
+
         vs.push(
-          minx, miny,
-          maxx, miny,
-          maxx, maxy,
-          minx, maxy,
-          minx, miny
+          maxx, miny, //0
+          maxx, maxy, //1
+          minx, maxy  //2
         );
-        // inds.push(
-        //   idx++, idx++, idx++,
-        //   idx++, idx++, idx++
-        // );
+        inds.push(
+          ind+0, ind+1, 
+          ind+1, ind+2
+        );
+        ind += 3;
       }
     }
 
-    // for (let box of this.boxlist.boxes) {
-    //   minx = box.position.x;
-    //   maxx = minx + box.size.x;
-    //   miny = box.position.y;
-    //   maxy = miny + box.size.y;
-
-    //   vs.push(
-    //     minx, miny,
-    //     maxx, miny,
-    //     minx, maxy,
-
-    //     minx, maxy,
-    //     maxx, miny,
-    //     maxx, maxy
-    //   );
-    //   inds.push(
-    //     idx++, idx++, idx++,
-    //     idx++, idx++, idx++
-    //   );
-    // }
     this.meshCollider.setTrimesh(
       new Float32Array(vs),
-      // new Uint32Array(inds)
+      new Uint32Array(inds)
     );
   }
 }

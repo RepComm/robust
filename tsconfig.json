@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "strict": false,
+
+        "lib": ["DOM", "ESNext"],
+        "target": "ES6",
+        "moduleResolution": "node"
+    }
+}

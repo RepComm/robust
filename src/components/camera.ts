@@ -3,20 +3,19 @@ import { Globals } from "../globals.js";
 import { ObjectComponent } from "./objectcomponent.js";
 
 export class Camera extends ObjectComponent {
-  width: number;
+  orthographicSize: number;
 
   constructor() {
     super();
-    this.width = 10;
+    this.orthographicSize = 10;
 
     this.onUpdate = () => {
-
       if (Globals.mainCamera === this) {
       }
     };
   }
-  setWidth (w: number): this {
-    this.width = w;
+  setOrthographicSize (w: number): this {
+    this.orthographicSize = w;
     return this;
   }
   onAttach(): void {

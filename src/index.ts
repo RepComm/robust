@@ -39,18 +39,19 @@ async function main () {
   .mount(container)
   .addRenderPass((ctx)=>{
     ctx.save();
-    let s = drawing.width/(Globals.mainCamera.width||8);
+    let s = drawing.width/(Globals.mainCamera.orthographicSize||8);
     ctx.scale(s, s);
     let {x, y} = Globals.mainCamera.entity.globalTransform.position;
     let aspect = drawing.width / drawing.height;
-    x -= Globals.mainCamera.width/2;
-    y -= Globals.mainCamera.width/2 / aspect;
+    x -= Globals.mainCamera.orthographicSize/2;
+    y -= Globals.mainCamera.orthographicSize/2 / aspect;
     ctx.translate(-x, -y);
 
     Globals.scene.object.render(ctx);
     ctx.restore();
   })
   .setHandlesResize(true);
+  Globals.canvas = drawing.element;
   
   setInterval(()=>{
     Globals.rapierWorld.step();

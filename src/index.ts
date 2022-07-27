@@ -6,8 +6,6 @@ import { Player } from "./components/player.js";
 import { Globals } from "./globals.js";
 import { ObjectEntity } from "./objectentity.js";
 
-
-
 EXPONENT_CSS_STYLES.mount(document.head);
 EXPONENT_CSS_BODY_STYLES.mount(document.head);
 
@@ -40,6 +38,7 @@ async function main () {
   .addRenderPass((ctx)=>{
     ctx.save();
     let s = drawing.width/(Globals.mainCamera.orthographicSize||8);
+    // console.log(s);
     ctx.scale(s, s);
     let {x, y} = Globals.mainCamera.entity.globalTransform.position;
     let aspect = drawing.width / drawing.height;

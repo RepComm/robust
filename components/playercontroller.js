@@ -6,7 +6,8 @@ import { Ray } from "../utils/ray.js";
 export class PlayerController extends ObjectComponent {
   constructor() {
     super();
-    this.speed = 0.1;
+    this.speed = 1;
+    this.velocitySpeedCutoff = 0.5;
     this.jumpMag = -10;
     this.isOnGround = false;
     this.groundedMaxDistance = 0.5;
@@ -14,13 +15,39 @@ export class PlayerController extends ObjectComponent {
     this.ray = new Ray();
 
     this.onUpdate = () => {
-      let hor = this.input.getAxisValue("hor") * this.speed;
+      let hor = this.input.getAxisValue("hor");
+
+      if (hor < 0.5 && hor > -0.5) {
+        hor = -this.rb.velocity.x * 0.5;
+      } else {
+        if (this.canWalkAccel) {
+          console.log("speed accel");
+          hor *= this.speed;
+        } else {
+          console.log("speed max");
+          hor = 0;
+        }
+      }
+
       this.detectNearGround();
       this.rb.applyImpulse({
         x: hor,
         y: this.canJump ? this.jumpMag : 0
       });
     };
+  }
+
+  get canWalkAccelLeft() {
+    return this.rb.velocity.x > -this.velocitySpeedCutoff;
+  }
+
+  get canWalkAccelRight() {
+    return this.rb.velocity.x < this.velocitySpeedCutoff;
+  }
+
+  get canWalkAccel() {
+    let vx = this.rb.velocity.x;
+    return vx > 0 && this.canWalkAccelRight || vx < 0 && this.canWalkAccelLeft;
   }
 
   detectNearGround() {

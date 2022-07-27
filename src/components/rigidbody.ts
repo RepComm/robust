@@ -1,7 +1,7 @@
 
 import { RigidBodyDesc, RigidBody as RapierRigidBody, RigidBodyType, Vector, RayColliderIntersection } from "@dimforge/rapier2d-compat";
 import { Globals } from "../globals.js";
-import { RAD2DEG } from "@repcomm/scenario2d";
+import { RAD2DEG, Vec2 } from "@repcomm/scenario2d";
 
 import { ObjectComponent } from "./objectcomponent.js";
 
@@ -15,14 +15,24 @@ export class RigidBody extends ObjectComponent {
   ccd: boolean;
   additionalMass: number;
 
+  velocity: Vec2;
+
+  private getVelocity (v: Vec2): this {
+    let vel = this._rapierRigidBody.linvel();
+    v.set(vel.x, vel.y);
+    return this;
+  }
+
   constructor () {
     super();
     this.type = RigidBodyType.Dynamic;
     this.canSleep = true;
     this.ccd = false;
     this.additionalMass = 1;
+    this.velocity = new Vec2();
 
     this.onUpdate = ()=>{
+      this.getVelocity( this.velocity );
       let { x, y } = this._rapierRigidBody.translation();
       this.entity.position.set(x, y);
       this.entity.rotation = this._rapierRigidBody.rotation() * RAD2DEG;

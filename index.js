@@ -24,7 +24,8 @@ async function main() {
   Globals.scene.add(player);
   const drawing = new Drawing().setId("drawing").mount(container).addRenderPass(ctx => {
     ctx.save();
-    let s = drawing.width / (Globals.mainCamera.orthographicSize || 8);
+    let s = drawing.width / (Globals.mainCamera.orthographicSize || 8); // console.log(s);
+
     ctx.scale(s, s);
     let {
       x,

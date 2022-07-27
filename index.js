@@ -23,21 +23,17 @@ async function main() {
   player.getOrCreateComponent(Player);
   Globals.scene.add(player);
   const drawing = new Drawing().setId("drawing").mount(container).addRenderPass(ctx => {
-<<<<<<< HEAD
     ctx.save();
-    let s = drawing.width / (Globals.mainCamera.width || 8);
+    let s = drawing.width / (Globals.mainCamera.orthographicSize || 8);
     ctx.scale(s, s);
     let {
       x,
       y
     } = Globals.mainCamera.entity.globalTransform.position;
     let aspect = drawing.width / drawing.height;
-    x -= Globals.mainCamera.width / 2;
-    y -= Globals.mainCamera.width / 2 / aspect;
+    x -= Globals.mainCamera.orthographicSize / 2;
+    y -= Globals.mainCamera.orthographicSize / 2 / aspect;
     ctx.translate(-x, -y);
-=======
-    Globals.scene.scale = drawing.width / (Globals.mainCamera.orthographicSize || 8);
->>>>>>> b4b27666f590a93e49843abb5c777373f74215e1
     Globals.scene.object.render(ctx);
     ctx.restore();
   }).setHandlesResize(true);

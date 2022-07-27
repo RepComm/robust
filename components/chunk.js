@@ -152,9 +152,8 @@ export class Chunk extends Renderable {
         ctx.fillStyle = getBlockColor(this.renderBlock.type);
         ctx.fillRect(x, y, 1, 1);
       }
-    }
+    } // this.renderCollisions(ctx);
 
-    this.renderCollisions(ctx);
   }
 
   renderCollisions(ctx) {

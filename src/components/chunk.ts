@@ -165,7 +165,7 @@ export class Chunk extends Renderable {
       }
     }
     
-    this.renderCollisions(ctx);
+    // this.renderCollisions(ctx);
   }
   renderCollisions (ctx: CanvasRenderingContext2D) {
     let vs = this.meshCollider.vertices;
